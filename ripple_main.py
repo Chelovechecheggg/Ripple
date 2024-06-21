@@ -282,7 +282,7 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
     file = open(filename, 'w')
     for i in range(len(R)):
         for k in range(len(Z)):
-            file.write(str(ripple[i,k]) + "," + str(R[i]) + "," + str(Z[k]) + "\n")
+            file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i,k]) +  "\n")
 
 
 # UNUSED FUNCTIONS. Archived for potential use/update in the future. None of the functions below work properly as of now
