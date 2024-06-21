@@ -385,7 +385,7 @@ def plot_Bt(Bfields, box_size, start_point, vol_resolution, which_plane='z', lev
     plt.show()
 
 
-N = 1.25
+N = 2
 Vol_size = [400, 400, 360]
 Vol_start = [-200, -200, -180]
 coil_res = 1
