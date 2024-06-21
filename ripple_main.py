@@ -408,7 +408,7 @@ only_read = True
 
 ripple = calc_ripple('Globus3_coils',N,vol_res,plane_Xminmax,plane_Zminmax,coil_res)
 plot_ripple(ripple,plane_Xminmax,plane_Zminmax,vol_res)
-print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,'Globus3_coils/Ripple_corr_actually.txt')
+print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,'Globus3_coils/Ripple.txt')
 
 '''
 coilnames = []
