@@ -259,9 +259,10 @@ def calc_plane_Bfield(path,N,plane,coil_res,plane_angle):
 
             coil = parse_coil(f"{path}/coil{i}_{l}.txt")
             sliced_coil = bs.slice_coil(coil[:3].T,coil[3:4].T,coil_res)
-
+            print(1)
             B_field = bs.calculate_field(sliced_coil[0],sliced_coil[1],plane)
             B_tor = B_tor + (-B_field[:, :, :, 0]*np.sin(plane_angle*np.pi/180) + B_field[:, :, :, 1]*np.cos(plane_angle*np.pi/180))
+            print(i, l)
     B_tor = B_tor.reshape(len(plane[0]),len(plane[0,0]))
     return B_tor
 
@@ -385,16 +386,16 @@ def plot_Bt(Bfields, box_size, start_point, vol_resolution, which_plane='z', lev
     plt.show()
 
 
-N = 2
+N = 3
 Vol_size = [400, 400, 360]
 Vol_start = [-200, -200, -180]
 coil_res = 1
-vol_res = 1
-plane_Xminmax = [10, 180]
-plane_Zminmax = [-160, 160]
+vol_res = 0.4
+plane_Xminmax = [11, 177]
+plane_Zminmax = [-150, 150]
 only_read = True
-#approx_N_coils(f"Globus3_coils/coils_base_upd.txt", N, 4)
-#clone_coils('Globus3_coils', N)
+approx_N_coils(f"Globus3_coils/coils_base_upd.txt", N, 4)
+clone_coils('Globus3_coils', N)
 #plot_coil(f"Globus3_coils/coil_base_u_1.txt",f"Globus3_coils/coil_base_u_2.txt",f"Globus3_coils/coil_base_u_3.txt",f"Globus3_coils/coil_base_u_4.txt",
 #          f"Globus3_coils/coil0_0.txt")
 #          f"Globus3_coils/coil1_0.txt",f"Globus3_coils/coil2_0.txt",f"Globus3_coils/coil3_0.txt")
@@ -407,8 +408,8 @@ only_read = True
 #plot_ripple
 
 ripple = calc_ripple('Globus3_coils',N,vol_res,plane_Xminmax,plane_Zminmax,coil_res)
-plot_ripple(ripple,plane_Xminmax,plane_Zminmax,vol_res)
-print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,'Globus3_coils/Ripple.txt')
+#plot_ripple(ripple,plane_Xminmax,plane_Zminmax,vol_res)
+print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,'Globus3_coils/Ripple_accurate.txt')
 
 '''
 coilnames = []
