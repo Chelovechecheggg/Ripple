@@ -46,9 +46,9 @@ def plot_coil(*input_filenames):
         else:
             ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
         i += 1
-    ax.axes.set_xlim3d(left=10, right=50)
+    ax.axes.set_xlim3d(left=10, right=180)
     ax.axes.set_ylim3d(bottom=-20, top=20)
-    ax.axes.set_zlim3d(bottom=110, top=150)
+    ax.axes.set_zlim3d(bottom=-150, top=150)
     plt.tight_layout()
     plt.show()
 
