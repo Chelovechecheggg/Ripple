@@ -39,16 +39,16 @@ def plot_coil(*input_filenames):
     ax.set_ylabel("$y$ (cm)")
     ax.set_zlabel("$z$ (cm)")
     i = 0
-    for input_filename in input_filenames:
+    for input_filename in input_filenames[0]:
         coil_points = np.array(parse_coil(input_filename))
         if i < 4:
             ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='green')
         else:
             ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
         i += 1
-    ax.axes.set_xlim3d(left=20, right=200)
-    ax.axes.set_ylim3d(bottom=-20, top=20)
-    ax.axes.set_zlim3d(bottom=140, top=160)
+    ax.axes.set_xlim3d(left=-200, right=200)
+    ax.axes.set_ylim3d(bottom=-200, top=200)
+    ax.axes.set_zlim3d(bottom=-200, top=200)
     plt.tight_layout()
     plt.show()
 
@@ -259,7 +259,6 @@ def calc_plane_Bfield(path,N,plane,coil_res,plane_angle):
 
             coil = parse_coil(f"{path}/coil{i}_{l}.txt")
             sliced_coil = bs.slice_coil(coil[:3].T,coil[3:4].T,coil_res)
-            print(1)
             B_field = bs.calculate_field(sliced_coil[0],sliced_coil[1],plane)
             B_tor = B_tor + (-B_field[:, :, :, 0]*np.sin(plane_angle*np.pi/180) + B_field[:, :, :, 1]*np.cos(plane_angle*np.pi/180))
             print(i, l)
@@ -268,9 +267,9 @@ def calc_plane_Bfield(path,N,plane,coil_res,plane_angle):
 
 
 def calc_ripple(path,N,vol_res,plane_Xminmax,plane_Zminmax,coil_res):
-    plane_0 = get_plane(0, plane_Xminmax[0], plane_Xminmax[1], plane_Zminmax[0], plane_Zminmax[1], vol_res)
+    plane_0 = get_plane(-0.3112, plane_Xminmax[0], plane_Xminmax[1], plane_Zminmax[0], plane_Zminmax[1], vol_res)
     plane_1125 = get_plane(11.25, plane_Xminmax[0], plane_Xminmax[1], plane_Zminmax[0], plane_Zminmax[1], vol_res)
-    Bmax = calc_plane_Bfield(path,N,plane_0,coil_res,0)
+    Bmax = calc_plane_Bfield(path,N,plane_0,coil_res,-0.3112)
     Bmin = calc_plane_Bfield(path, N, plane_1125, coil_res, 11.25)
     ripple = np.zeros(shape=(len(plane_0[0]),len(plane_0[0,0])))
     ripple = (Bmax-Bmin)/(Bmax+Bmin)
@@ -284,6 +283,19 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
     for i in range(len(R)):
         for k in range(len(Z)):
             file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i,k]) +  "\n")
+
+def misplace_coil(angle,coil_number,N):
+    for i in range(int(4*(N-1))):
+        coil = np.loadtxt(f'Globus3_coils/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
+        coil_coords = coil[:,:3]
+        r = R.from_euler('z', angle, degrees=True)
+        coil_coords = r.apply(coil_coords)
+        file = open(f'Globus3_coils/coil{i}_{coil_number}.txt','w')
+        for point in coil_coords:
+            file.write(str(point[0]) + "," + str(point[1]) + "," + str(point[2]) + ',' + '1' "\n")
+        file.close()
+
+
 
 
 # UNUSED FUNCTIONS. Archived for potential use/update in the future. None of the functions below work properly as of now
@@ -390,12 +402,19 @@ N = 3
 Vol_size = [400, 400, 360]
 Vol_start = [-200, -200, -180]
 coil_res = 1
-vol_res = 0.4
-plane_Xminmax = [11, 177]
+vol_res = 1
+plane_Xminmax = [10, 180]
 plane_Zminmax = [-150, 150]
+planes_Xminmax = [[10, 30],[30, 50],[50, 70],[70, 90],[90, 110],[110, 130],[130, 150],[150, 170],[170, 180]]
+planes_Zminmax = [[-150, -130],[-130, -110],[-110, -90],[-90, -70],[-70, -50],[-50, -30],[-30,-10],[-10, 10],
+                  [10, 30],[30, 50],[50, 70],[70, 90],[90,110],[110, 130],[130, 150]]
 only_read = True
+
+
 approx_N_coils(f"Globus3_coils/coils_base_upd.txt", N, 4)
 clone_coils('Globus3_coils', N)
+misplace_coil(-0.3112,0,N)
+misplace_coil(0.3112,1,N)
 #plot_coil(f"Globus3_coils/coil_base_u_1.txt",f"Globus3_coils/coil_base_u_2.txt",f"Globus3_coils/coil_base_u_3.txt",f"Globus3_coils/coil_base_u_4.txt",
 #          f"Globus3_coils/coil0_0.txt")
 #          f"Globus3_coils/coil1_0.txt",f"Globus3_coils/coil2_0.txt",f"Globus3_coils/coil3_0.txt")
@@ -407,13 +426,25 @@ clone_coils('Globus3_coils', N)
 # plot_Bt(h_total, (60, 60, 50), (-30, -30, -25), 1, which_plane='z', level=16, num_contours=150)
 #plot_ripple
 
-ripple = calc_ripple('Globus3_coils',N,vol_res,plane_Xminmax,plane_Zminmax,coil_res)
-#plot_ripple(ripple,plane_Xminmax,plane_Zminmax,vol_res)
-print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,'Globus3_coils/Ripple_accurate.txt')
+
+#ripple = calc_ripple('Globus3_coils',N,vol_res,plane_Xminmax,plane_Zminmax,coil_res)
+#print_ripple(ripple, plane_Xminmax, plane_Zminmax, vol_res,
+#             f'Globus3_coils/Ripple.txt')
+
+
+l = 0
+for plane_Xminmax in planes_Xminmax:
+    for plane_Zminmax in planes_Zminmax:
+        print(plane_Xminmax,plane_Zminmax)
+        ripple = calc_ripple('Globus3_coils',N,vol_res,plane_Xminmax,plane_Zminmax,coil_res)
+        #plot_ripple(ripple,plane_Xminmax,plane_Zminmax,vol_res)
+        print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,f'Globus3_coils/Ripple_misplaced/Ripple_misplaced_{l}.txt')
+        l+=1
+
 
 '''
 coilnames = []
-for i in range(4*(N-1)):
+for i in range(int(4*(N-1))):
     for j in range(16):
         coilnames.append(f"Globus3_coils/coil{i}_{j}.txt")
 plot_coil(coilnames)
