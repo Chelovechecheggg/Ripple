@@ -27,7 +27,8 @@ Once the input file is ready, we can start calculating the ripple of the coil se
 The easiest approach to calculate ripple is provided in *run_N1.py* file. Required parameters are: \
 **N** - a natural* number that defines the amount of infinitely thin wires that approximate the coil. The coil will be
  approximated by 4*(*N*-1) wires spread evenly inside the coil. The simplest approximation is one wire in the center of the coil, 
-to approximate in this way, set N = 1.25 (so that 4*(*N*-1) = 1). For better approximation use bigger values of *N*, but they must be natural. 
+to approximate in this way, set N = 1.25 (so that 4*(*N*-1) = 1 (yes, this is a very janky workaround, but it works)). 
+For better approximation use bigger values of *N*, but they must be natural. 
 The only acceptable non-natural value is 1.25. For accurate calculations value of *N* of 3 or higher is recommended\
 **coil_res** - infinitely thin wires will be approximated by straight lines with length of *coil_res* cm.\
 **vol_res** - distance between data points in resulting (R,Z) plane, in cm. \
@@ -60,7 +61,7 @@ Using this function you can calculate how ripple changes within your given degre
 To see how the program interpretates the input file, you can plot the coils using **plot_coil** function. The arguments 
 of this function are the names of the .txt files with approximated coils (output of **approx_N_coils**). You can see how 
 it is used in the *run_plot_base_coils.py* file. \
-*run_plot_all_coils.py* shows how to plot all *N_clones* at once using **plot_coils** function, which is basically the same function 
+*run_plot_all_coils.py* shows how to plot all *N_clones* coils at once using **plot_coils** function, which is basically the same function 
 but different input format. The graphs' scale is set to match Globus3 coils. 
 If you want to change it, change it in the *ripple_main.py* code. Yes, this entire plotting part is very janky, i will update it to be more 
 user-friendly later (maybe)
