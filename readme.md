@@ -17,7 +17,7 @@ x2  y2  z2 \
 ... \
 x_n y_n z_n \
 x1  y1  z1 #Note that the first point repeats at the end, so that the last point connects to the first\
-            # a blank line that separates different edges of the coil \
+0   0   0  # a zero valued line that separates different edges of the coil (if [0, 0, 0] are coordinates of a vertex, set them to [0.001, 0, 0] or something) \
 x1  y1  z1 #next edge of the coil, formatted like the first one\
 ... #repeat for all four edges <p>
 An example of an input file with a coil can be seen in *coils_base_upd.txt*. The edges **MUST** be provided in order, either clockwise
