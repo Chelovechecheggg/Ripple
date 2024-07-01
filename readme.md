@@ -5,7 +5,7 @@ It is made for calculating Globus-M3 ripple, but can be used for any other tokam
 This script assumes that current is equal in all parts of the coil (assumes I = 1 A, since ripple is independent of current). 
 It also has additional functionality, i.e. calculating toroidal magnetic field in (X,Y) plane at height Z, 
 and a plotting function for verifying input coils. Example files with required input data and their descriptions are provided.
-This script uses boit_savart library for calculating magnetic fields.
+This script uses biot_savart library for calculating magnetic fields.
 ## Usage
 ### Input file formatting
 First, we need to make a file that defines the coil. Since a coil (usually) has four faces, we define it
