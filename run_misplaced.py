@@ -13,14 +13,14 @@ planes_Zminmax = [[-150, -130],[-130, -110],[-110, -90],[-90, -70],[-70, -50],[-
 plane_max_angle = -0.3112
 plane_min_angle = 11.25
 only_read = True
+output_filename = f'Globus3_coils/Ripple_acc/Ripple_acc.txt'
 
-
-ripperoni.approx_N_coils(f"Globus3_coils/coils_base_upd.txt", N, 4)
-ripperoni.clone_coils('Globus3_coils', N)
+ripperoni.approx_N_coils('Globus3_coils',f"Globus3_coils/coils_base_upd.txt", N, 4)
+ripperoni.clone_coils('Globus3_coils', N, 16)
 ripperoni.misplace_coil(-0.3112,0,N)
 ripperoni.misplace_coil(0.3112,1,N)
 
-
+ripperoni.clear_output_file(output_filename)
 
 l = 0
 for plane_Xminmax in planes_Xminmax:
@@ -28,6 +28,6 @@ for plane_Xminmax in planes_Xminmax:
         print(plane_Xminmax,plane_Zminmax)
         ripple = ripperoni.calc_ripple('Globus3_coils',N,vol_res,plane_Xminmax,plane_Zminmax,coil_res,plane_max_angle,plane_min_angle)
         #plot_ripple(ripple,plane_Xminmax,plane_Zminmax,vol_res)
-        ripperoni.print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,f'Globus3_coils/Ripple_acc/Ripple_acc_{l}.txt')
+        ripperoni.print_ripple(ripple, plane_Xminmax,plane_Zminmax,vol_res,output_filename)
         l+=1
 

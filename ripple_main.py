@@ -240,14 +240,14 @@ def make_approx(splits, N, N_base_coils):
     return approx
 
 
-def print_coil(coil, k):
-    coiltxt = open(f"Globus3_coils/coil{k}.txt", 'w')
+def print_coil(path, coil, k):
+    coiltxt = open(f"{path}/coil{k}.txt", 'w')
     for point in coil:
         coiltxt.write(str(point[0]) + "," + str(point[1]) + "," + str(point[2]) + "," + "1\n")
     return
 
 
-def approx_N_coils(coil_fn, N, N_base_coils):
+def approx_N_coils(path,coil_fn, N, N_base_coils):
     all_coils = np.loadtxt(coil_fn, comments="#", delimiter="\t", unpack=False)
     # print(all_coils)
     K = int((len(all_coils) - N_base_coils + 1) / N_base_coils)
@@ -274,13 +274,13 @@ def approx_N_coils(coil_fn, N, N_base_coils):
     print(approximated_coils)
     for k in range(len(approximated_coils)):
         print(approximated_coils[k])
-        print_coil(approximated_coils[k], k)
+        print_coil(path,approximated_coils[k], k)
 
 
-def clone_coils(fpath, N):
+def clone_coils(fpath, N, N_clones):
     for p in range(int(4 * (N - 1))):
-        for l in range(16):
-            r = R.from_euler('z', 22.5 * l, degrees=True)
+        for l in range(N_clones):
+            r = R.from_euler('z', (360/N_clones) * l, degrees=True)
             vert = np.loadtxt(f'{fpath}\coil{p}.txt', delimiter=',')
             f = open(f"{fpath}\coil{p}_{l}.txt", 'w')
             verts = []
@@ -339,7 +339,7 @@ def calc_ripple(path,N,vol_res,plane_Xminmax,plane_Zminmax,coil_res,max_angle,mi
 def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
     R = np.linspace(int(Xminmax[0]), int(Xminmax[1]), int((Xminmax[1] - Xminmax[0]) / vol_res) + 1)
     Z = np.linspace(int(Zminmax[0]), int(Zminmax[1]), int((Zminmax[1] - Zminmax[0]) / vol_res) + 1)
-    file = open(filename, 'w')
+    file = open(filename, 'a')
     for i in range(len(R)):
         for k in range(len(Z)):
             file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i,k]) +  "\n")
@@ -357,10 +357,19 @@ def misplace_coil(angle,coil_number,N):
         file.close()
 
 
-def calc_Btor(planeXminmax, planeYminmax, vol_res, coil_res, path, N):
-    planeZ = get_plane_Z(0,planeXminmax[0],planeXminmax[1],planeYminmax[0],planeXminmax[1],vol_res)
+def calc_Btor(planeXminmax, planeYminmax, vol_res, coil_res, path, N, filename):
+    planeZ = get_plane_Z(0,planeXminmax[0],planeXminmax[1],planeYminmax[0],planeYminmax[1],vol_res)
     Btor = calc_plane_Bfield(path,N,planeZ,coil_res)
+    file = open(f'{path}/{filename}', 'w')
+    for pointX,Bx in zip(planeZ[0],Btor):
+        for pointY,By in zip(pointX,Bx):
+            file.write(str(pointY[0]) + "," + str(pointY[1]) + "," + str(By) + "\n")
+    file.close()
 
+
+def clear_output_file(filename):
+    f = open(filename, 'w')
+    f.close()
 
 
 # UNUSED FUNCTIONS. Archived for potential use/update in the future. None of the functions below work properly as of now

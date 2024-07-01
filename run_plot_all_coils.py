@@ -15,8 +15,8 @@ plane_min_angle = 11.25
 only_read = True
 
 
-ripperoni.approx_N_coils(f"Globus3_coils/coils_base_upd.txt", N, 4)
-ripperoni.clone_coils('Globus3_coils', N)
+ripperoni.approx_N_coils('Globus3_coils',f"Globus3_coils/coils_base_upd.txt", N, 4)
+ripperoni.clone_coils('Globus3_coils', N, 16)
 ripperoni.misplace_coil(-10.3112,0,N)
 ripperoni.misplace_coil(0.3112,1,N)
 
