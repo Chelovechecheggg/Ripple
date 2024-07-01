@@ -34,7 +34,7 @@ The only acceptable non-natural value is 1.25. For accurate calculations value o
 **vol_res** - distance between data points in resulting (R,Z) plane, in cm. \
 **plane_Xminmax** - a list with two elements; boundaries of the R axis (named X since calculations are done in cartesian coordinates internally)\
 **plane_Zminmax** - a list with two elements; boundaries of the Z axis\
-**output_filename** - Name of the file where output will be stored
+**output_filename** - Name of the file where output will be stored\
 **plane_max_angle** - angle of the (R,Z) plane where magnetic field is at its maximum. (angle at which one of the coils is positioned)\
 **plane_min_angle** - angle of the (R,Z) plane where magnetic field is at its minimum (between two coils) <p>
 After setting these parameters, four functions are used:\
