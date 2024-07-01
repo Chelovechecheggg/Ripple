@@ -50,7 +50,7 @@ This function actually computes the ripple with all the given parameters\
 This function puts the calculated ripple in a file *filename* in format (R,Z,ripple_value) so you can plot it in plotting program of you choice. <p>
 This method of calculating ripple is fast but not accurate. When attempting to increase *N* or decrease *coil_res* or *vol_res* 
 for higher accuracy, you will run into memory errors at some point. To avoid that, use a method shown in *run_accurate.py*\
-Here the **planes_X(Z)minmax** parameters are now lists of multiple lists of two values. This way instead of computing the entire
+Here the *planes_X(Z)minmax* parameters are now lists of multiple lists of two values. This way instead of computing the entire
 (R,Z) plane at once, it computes it in smaller parts. The **calc_ripple** function is now in a for loop, going over all given parts 
 of the (R,Z) plane. This way you can increase accuracy up to any given value by splitting the plane into more parts to avoid memory errors. <p>
 *run_misplaced.py* file showcases how to calculate ripple in case if one or more coils are misplaced (which happens in real life 
