@@ -25,34 +25,6 @@ def parse_coil(filename):
     return parsed_coil.T
 
 
-def plot_coil(*input_filenames):
-    '''
-    Plots one or more coils in space.
-
-    input_filenames: Name of the files containing the coils.
-    Should be formatted appropriately.
-    '''
-    fig = plt.figure()
-    tick_spacing = 2
-    ax = fig.add_subplot(111, projection='3d')
-    ax.set_xlabel("$x$ (cm)")
-    ax.set_ylabel("$y$ (cm)")
-    ax.set_zlabel("$z$ (cm)")
-    i = 0
-    for input_filename in input_filenames:
-        coil_points = np.array(parse_coil(input_filename))
-        if i < 4:
-            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='green')
-        else:
-            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
-        i += 1
-    ax.axes.set_xlim3d(left=10, right=180)
-    ax.axes.set_ylim3d(bottom=-20, top=20)
-    ax.axes.set_zlim3d(bottom=-150, top=150)
-    plt.tight_layout()
-    plt.show()
-
-
 def plot_coils(input_filenames,xlims,ylims,zlims):
     '''
     Plots one or more coils in space.
@@ -470,4 +442,25 @@ def plot_Bt(Bfields, box_size, start_point, vol_resolution, which_plane='z', lev
 
     plt.show()
 
+
+def plot_coil(*input_filenames):
+    fig = plt.figure()
+    tick_spacing = 2
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel("$x$ (cm)")
+    ax.set_ylabel("$y$ (cm)")
+    ax.set_zlabel("$z$ (cm)")
+    i = 0
+    for input_filename in input_filenames:
+        coil_points = np.array(parse_coil(input_filename))
+        if i < 4:
+            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='green')
+        else:
+            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
+        i += 1
+    ax.axes.set_xlim3d(left=10, right=180)
+    ax.axes.set_ylim3d(bottom=-20, top=20)
+    ax.axes.set_zlim3d(bottom=-150, top=150)
+    plt.tight_layout()
+    plt.show()
 '''
