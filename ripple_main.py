@@ -53,7 +53,7 @@ def plot_coil(*input_filenames):
     plt.show()
 
 
-def plot_coils(*input_filenames):
+def plot_coils(input_filenames,xlims,ylims,zlims):
     '''
     Plots one or more coils in space.
 
@@ -67,16 +67,16 @@ def plot_coils(*input_filenames):
     ax.set_ylabel("$y$ (cm)")
     ax.set_zlabel("$z$ (cm)")
     i = 0
-    for input_filename in input_filenames[0]:
+    for input_filename in input_filenames:
         coil_points = np.array(parse_coil(input_filename))
         if i < 4:
             ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='green')
         else:
             ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
         i += 1
-    ax.axes.set_xlim3d(left=-200, right=200)
-    ax.axes.set_ylim3d(bottom=-200, top=200)
-    ax.axes.set_zlim3d(bottom=-200, top=200)
+    ax.axes.set_xlim3d(left=xlims[0], right=xlims[1])
+    ax.axes.set_ylim3d(bottom=ylims[0], top=ylims[1])
+    ax.axes.set_zlim3d(bottom=zlims[0], top=zlims[1])
     plt.tight_layout()
     plt.show()
 

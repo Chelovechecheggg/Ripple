@@ -24,4 +24,4 @@ coilnames = []
 for i in range(int(4*(N-1))):
     for j in range(16):
         coilnames.append(f"Globus3_coils/coil{i}_{j}.txt")
-ripperoni.plot_coils(coilnames)
+ripperoni.plot_coils(coilnames,[-200,200],[-200,200],[-200,200])

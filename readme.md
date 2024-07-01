@@ -58,13 +58,13 @@ since life isnt perfect). Here **misplace_coil**(*angle*, *N_coil*, *N*) functio
 Using this function you can calculate how ripple changes within your given degree of precision of real life coil placement.
 ### Other uses
 #### Plotting coils
-To see how the program interpretates the input file, you can plot the coils using **plot_coil** function. The arguments 
-of this function are the names of the .txt files with approximated coils (output of **approx_N_coils**). You can see how 
-it is used in the *run_plot_base_coils.py* file. \
-*run_plot_all_coils.py* shows how to plot all *N_clones* coils at once using **plot_coils** function, which is basically the same function 
-but different input format. The graphs' scale is set to match Globus3 coils. 
-If you want to change it, change it in the *ripple_main.py* code. Yes, this entire plotting part is very janky, i will update it to be more 
-user-friendly later (maybe)
+To see how the program interpretates the input file, you can plot the coils using **plot_coils** function. The arguments 
+of this function are:\
+*input_filenames* - array of names of .txt files with approximated coils (output of **approx_N_coils**).\
+*xlims*, *ylims*, *zlims* - axis scale of the plot.\
+You can see how this function is used in the *run_plot_base_coils.py* and *run_plot_all_coils.py* files. In the first one 
+it is used to plot one coil: its edges given in input file and the approximations. The second file shows how to plot all 
+*N_clones* coil approximations at once (in this case, to see how one of them is misplaced.)
 #### Calculating toroidal magnetic field
 Since calculating ripple requires calculation of toroidal magnetic field, an option to output only the fields and not ripple was added. 
 It is showcased in *run_Btor.py* file. The structure of file is the same as in *run_misplaced.py*, except at the end 
