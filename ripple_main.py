@@ -179,7 +179,7 @@ def make_approx(splits, N, N_base_coils):
                 ax.scatter(splits[2, -(i+1), 0], splits[2, -(i+1), 1], splits[2, -(i+1), 2], lw=2, color='green')
                 ax.scatter(splits[1, k, 0], splits[1, k, 1], splits[1, k, 2], lw=2, color='green')
                 ax.scatter(splits[3, k, 0], splits[3, k, 1], splits[3, k, 2], lw=2, color='green')
-                
+
                 ax.scatter(coil_points[0], coil_points[1], coil_points[2], lw=2)
                 '''
                 j += 1
@@ -208,6 +208,39 @@ def make_approx(splits, N, N_base_coils):
 
     # plt.tight_layout()
     # plt.show()
+
+    return approx
+
+
+def make_approx2(splits, N, N_base_coils):
+    '''
+    fig = plt.figure()
+    tick_spacing = 2
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel("$x$ (cm)")
+    ax.set_ylabel("$y$ (cm)")
+    ax.set_zlabel("$z$ (cm)")
+    ax.axes.set_xlim3d(left=00, right=40)
+    ax.axes.set_ylim3d(bottom=-20, top=20)
+    ax.axes.set_zlim3d(bottom=120, top=160)
+    '''
+
+    approx = np.zeros(shape=(int(N_base_coils * (N - 1)), 3))
+    j = 0
+    for i in range(int(N)):
+        for k in range(int(N)):
+            approx[j] = intersect(splits[0, i], splits[2, -(i + 1)], splits[1, k], splits[3, -(k + 1)])
+
+            coil_points = approx[j]
+            '''
+            ax.scatter(splits[0,i,0], splits[0,i,1], splits[0,i,2], lw=2,color='green')
+            ax.scatter(splits[2, -(i+1), 0], splits[2, -(i+1), 1], splits[2, -(i+1), 2], lw=2, color='green')
+            ax.scatter(splits[1, k, 0], splits[1, k, 1], splits[1, k, 2], lw=2, color='green')
+            ax.scatter(splits[3, k, 0], splits[3, k, 1], splits[3, k, 2], lw=2, color='green')
+
+            ax.scatter(coil_points[0], coil_points[1], coil_points[2], lw=2)
+            '''
+            j += 1
 
     return approx
 
@@ -242,7 +275,7 @@ def approx_N_coils(path,coil_fn, N, N_base_coils):
             points[l] = ps
             l += 1
         splits = split_segments(points, N, N_base_coils)
-        approximated_coils[:, i] = make_approx(splits, N, N_base_coils)
+        approximated_coils[:, i] = make_approx2(splits, N, N_base_coils)
     print(approximated_coils)
     for k in range(len(approximated_coils)):
         print(approximated_coils[k])

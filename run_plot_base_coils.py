@@ -1,6 +1,6 @@
 import ripple_main as ripperoni
 
-N = 3
+N = 4
 Vol_size = [400, 400, 360]
 Vol_start = [-200, -200, -180]
 coil_res = 1
@@ -15,12 +15,11 @@ plane_min_angle = 11.25
 only_read = True
 
 
-ripperoni.approx_N_coils('Globus3_coils',f"Globus3_coils/coils_base_upd.txt", N, 4)
+ripperoni.approx_N_coils('Globus3_coils',f"Globus3_coils/coils_base_curved_upd.txt", N, 4)
 ripperoni.clone_coils('Globus3_coils', N, 16)
-ripperoni.plot_coils([f"Globus3_coils/coil_base_1.txt",f"Globus3_coils/coil_base_2.txt",f"Globus3_coils/coil_base_3.txt",f"Globus3_coils/coil_base_4.txt",
-          f"Globus3_coils/coil0_0.txt",
-       f"Globus3_coils/coil1_0.txt",f"Globus3_coils/coil2_0.txt",f"Globus3_coils/coil3_0.txt",
-      f"Globus3_coils/coil4_0.txt", f"Globus3_coils/coil5_0.txt", f"Globus3_coils/coil6_0.txt", f"Globus3_coils/coil7_0.txt"],
-                     [10,180],[-20,20],[-150,150])
-#        f"Globus3_coils/coil8_0.txt", f"Globus3_coils/coil9_0.txt", f"Globus3_coils/coil10_0.txt", f"Globus3_coils/coil11_0.txt",
-#        f"Globus3_coils/coil12_0.txt", f"Globus3_coils/coil13_0.txt", f"Globus3_coils/coil14_0.txt", f"Globus3_coils/coil15_0.txt",)
+#coilnames = []
+coilnames = ['Globus3_coils/coil_base_u_1.txt','Globus3_coils/coil_base_u_2.txt','Globus3_coils/coil_base_u_3.txt','Globus3_coils/coil_base_u_4.txt']
+for i in range(int(4*(N-1))):
+    for j in range(1):
+        coilnames.append(f"Globus3_coils/coil{i}_{j}.txt")
+ripperoni.plot_coils(coilnames,[-30,30],[-30,30],[120,180])
