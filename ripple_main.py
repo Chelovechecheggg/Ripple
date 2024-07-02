@@ -25,7 +25,7 @@ def parse_coil(filename):
     return parsed_coil.T
 
 
-def plot_coils(input_filenames,xlims,ylims,zlims):
+def plot_coils(input_filenames, xlims, ylims, zlims):
     '''
     Plots one or more coils in space.
 
@@ -53,13 +53,13 @@ def plot_coils(input_filenames,xlims,ylims,zlims):
     plt.show()
 
 
-def plot_ripple(ripple_pl,Xminmax, Zminmax, vol_res):
+def plot_ripple(ripple_pl, Xminmax, Zminmax, vol_res):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
     axes[0].set_ylabel("Z (cm)")
 
     for i in range(1):
-        R = np.linspace(int(Xminmax[0]),int(Xminmax[1]),int((Xminmax[1] - Xminmax[0]) / vol_res)+ 1)
-        Z = np.linspace(int(Zminmax[0]),int(Zminmax[1]),int((Zminmax[1] - Zminmax[0]) / vol_res)+ 1)
+        R = np.linspace(int(Xminmax[0]), int(Xminmax[1]), int((Xminmax[1] - Xminmax[0]) / vol_res) + 1)
+        Z = np.linspace(int(Zminmax[0]), int(Zminmax[1]), int((Zminmax[1] - Zminmax[0]) / vol_res) + 1)
         contours = axes[i].contourf(R, Z, ripple_pl.T,
                                     vmin=0, vmax=ripple_pl.max(),
                                     cmap=cm.hot, levels=150)
@@ -82,7 +82,7 @@ def get_plane(phi, Xmin, Xmax, Zmin, Zmax, vol_resolution):
     plane = np.array(plane)
     r = R.from_euler('z', phi, degrees=True)
     plane = r.apply(plane)
-    plane = plane.reshape((1,int((Xmax-Xmin)/vol_resolution)+1,int((Zmax-Zmin)/vol_resolution)+1,3))
+    plane = plane.reshape((1, int((Xmax - Xmin) / vol_resolution) + 1, int((Zmax - Zmin) / vol_resolution) + 1, 3))
     '''
     file = open('plane.txt', 'w')
     for i in plane[0]:
@@ -92,6 +92,7 @@ def get_plane(phi, Xmin, Xmax, Zmin, Zmax, vol_resolution):
 
     return plane
 
+
 def get_plane_Z(z, Xmin, Xmax, Ymin, Ymax, vol_resolution):
     X = np.linspace(int(Xmin), int(Xmax), int((Xmax - Xmin) / vol_resolution) + 1)
     Y = np.linspace(int(Ymin), int(Ymax), int((Ymax - Ymin) / vol_resolution) + 1)
@@ -100,7 +101,7 @@ def get_plane_Z(z, Xmin, Xmax, Ymin, Ymax, vol_resolution):
         for j in range(len(Y)):
             plane.append(np.array([X[i], Y[j], z]))
     plane = np.array(plane)
-    plane = plane.reshape((1,int((Xmax-Xmin)/vol_resolution)+1,int((Ymax-Ymin)/vol_resolution)+1,3))
+    plane = plane.reshape((1, int((Xmax - Xmin) / vol_resolution) + 1, int((Ymax - Ymin) / vol_resolution) + 1, 3))
     '''
     file = open('plane.txt', 'w')
     for i in plane[0]:
@@ -252,7 +253,7 @@ def print_coil(path, coil, k):
     return
 
 
-def approx_N_coils(path,coil_fn, N, N_base_coils):
+def approx_N_coils(path, coil_fn, N, N_base_coils):
     all_coils = np.loadtxt(coil_fn, comments="#", delimiter="\t", unpack=False)
     # print(all_coils)
     K = int((len(all_coils) - N_base_coils + 1) / N_base_coils)
@@ -279,13 +280,13 @@ def approx_N_coils(path,coil_fn, N, N_base_coils):
     print(approximated_coils)
     for k in range(len(approximated_coils)):
         print(approximated_coils[k])
-        print_coil(path,approximated_coils[k], k)
+        print_coil(path, approximated_coils[k], k)
 
 
 def clone_coils(fpath, N, N_clones):
     for p in range(int(4 * (N - 1))):
         for l in range(N_clones):
-            r = R.from_euler('z', (360/N_clones) * l, degrees=True)
+            r = R.from_euler('z', (360 / N_clones) * l, degrees=True)
             vert = np.loadtxt(f'{fpath}\coil{p}.txt', delimiter=',')
             f = open(f"{fpath}\coil{p}_{l}.txt", 'w')
             verts = []
@@ -302,42 +303,40 @@ def clone_coils(fpath, N, N_clones):
         # f.close()
 
 
-def Bfield_to_Btor(Bfield,plane):
-    Btor = np.zeros(shape=(len(plane),len(plane[0]),len(plane[0,0])))
+def Bfield_to_Btor(Bfield, plane):
+    Btor = np.zeros(shape=(len(plane), len(plane[0]), len(plane[0, 0])))
     for i in range(len(plane)):
         for j in range(len(plane[i])):
-            for k in range(len(plane[i,j])):
-                Btor[i,j,k] = -Bfield[i, j, k, 0]*np.sin(np.arctan(plane[i,j,k,1]/plane[i,j,k,0])) + \
-                       Bfield[i, j, k, 1]*np.cos(np.arctan(plane[i,j,k,1]/plane[i,j,k,0]))
+            for k in range(len(plane[i, j])):
+                Btor[i, j, k] = -Bfield[i, j, k, 0] * np.sin(np.arctan(plane[i, j, k, 1] / plane[i, j, k, 0])) + \
+                                Bfield[i, j, k, 1] * np.cos(np.arctan(plane[i, j, k, 1] / plane[i, j, k, 0]))
     return Btor
 
 
-
-def calc_plane_Bfield(path,N,plane,coil_res):
-    #h = np.zeros(shape=(4*(N-1)*16,N_points,3))
-    B_tor = np.zeros(shape=(1,len(plane[0]),len(plane[0,0])))
+def calc_plane_Bfield(path, N, plane, coil_res):
+    # h = np.zeros(shape=(4*(N-1)*16,N_points,3))
+    B_tor = np.zeros(shape=(1, len(plane[0]), len(plane[0, 0])))
     B_tor2 = np.zeros(shape=(1, len(plane[0]), len(plane[0, 0])))
-    for i in range(int(4*(N-1))):
+    for i in range(int(4 * (N - 1))):
         for l in range(16):
-
             coil = parse_coil(f"{path}/coil{i}_{l}.txt")
-            sliced_coil = bs.slice_coil(coil[:3].T,coil[3:4].T,coil_res)
-            B_field = bs.calculate_field(sliced_coil[0],sliced_coil[1],plane)
-            B_tor2 = B_tor2 + Bfield_to_Btor(B_field,plane)
-            #B_tor = B_tor + (-B_field[:, :, :, 0]*np.sin(plane_angle*np.pi/180) + B_field[:, :, :, 1]*np.cos(plane_angle*np.pi/180))
+            sliced_coil = bs.slice_coil(coil[:3].T, coil[3:4].T, coil_res)
+            B_field = bs.calculate_field(sliced_coil[0], sliced_coil[1], plane)
+            B_tor2 = B_tor2 + Bfield_to_Btor(B_field, plane)
+            # B_tor = B_tor + (-B_field[:, :, :, 0]*np.sin(plane_angle*np.pi/180) + B_field[:, :, :, 1]*np.cos(plane_angle*np.pi/180))
             print(i, l)
-    #B_tor = B_tor.reshape(len(plane[0]),len(plane[0,0]))
+    # B_tor = B_tor.reshape(len(plane[0]),len(plane[0,0]))
     B_tor2 = B_tor2.reshape(len(plane[0]), len(plane[0, 0]))
     return B_tor2
 
 
-def calc_ripple(path,N,vol_res,plane_Xminmax,plane_Zminmax,coil_res,max_angle,min_angle):
+def calc_ripple(path, N, vol_res, plane_Xminmax, plane_Zminmax, coil_res, max_angle, min_angle):
     plane_0 = get_plane(max_angle, plane_Xminmax[0], plane_Xminmax[1], plane_Zminmax[0], plane_Zminmax[1], vol_res)
     plane_1125 = get_plane(min_angle, plane_Xminmax[0], plane_Xminmax[1], plane_Zminmax[0], plane_Zminmax[1], vol_res)
-    Bmax = calc_plane_Bfield(path,N,plane_0,coil_res)
+    Bmax = calc_plane_Bfield(path, N, plane_0, coil_res)
     Bmin = calc_plane_Bfield(path, N, plane_1125, coil_res)
-    ripple = np.zeros(shape=(len(plane_0[0]),len(plane_0[0,0])))
-    ripple = (Bmax-Bmin)/(Bmax+Bmin)
+    ripple = np.zeros(shape=(len(plane_0[0]), len(plane_0[0, 0])))
+    ripple = (Bmax - Bmin) / (Bmax + Bmin)
     return ripple
 
 
@@ -347,27 +346,27 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
     file = open(filename, 'a')
     for i in range(len(R)):
         for k in range(len(Z)):
-            file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i,k]) +  "\n")
+            file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i, k]) + "\n")
 
 
-def misplace_coil(path,angle,coil_number,N):
-    for i in range(int(4*(N-1))):
+def misplace_coil(path, angle, coil_number, N):
+    for i in range(int(4 * (N - 1))):
         coil = np.loadtxt(f'{path}/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
-        coil_coords = coil[:,:3]
+        coil_coords = coil[:, :3]
         r = R.from_euler('z', angle, degrees=True)
         coil_coords = r.apply(coil_coords)
-        file = open(f'{path}/coil{i}_{coil_number}.txt','w')
+        file = open(f'{path}/coil{i}_{coil_number}.txt', 'w')
         for point in coil_coords:
             file.write(str(point[0]) + "," + str(point[1]) + "," + str(point[2]) + ',' + '1' "\n")
         file.close()
 
 
 def calc_Btor(planeXminmax, planeYminmax, vol_res, coil_res, path, N, filename):
-    planeZ = get_plane_Z(0,planeXminmax[0],planeXminmax[1],planeYminmax[0],planeYminmax[1],vol_res)
-    Btor = calc_plane_Bfield(path,N,planeZ,coil_res)
+    planeZ = get_plane_Z(0, planeXminmax[0], planeXminmax[1], planeYminmax[0], planeYminmax[1], vol_res)
+    Btor = calc_plane_Bfield(path, N, planeZ, coil_res)
     file = open(f'{path}/{filename}', 'w')
-    for pointX,Bx in zip(planeZ[0],Btor):
-        for pointY,By in zip(pointX,Bx):
+    for pointX, Bx in zip(planeZ[0], Btor):
+        for pointY, By in zip(pointX, Bx):
             file.write(str(pointY[0]) + "," + str(pointY[1]) + "," + str(By) + "\n")
     file.close()
 
