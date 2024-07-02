@@ -1,6 +1,6 @@
 import ripple_main as ripperoni
 
-N = 10
+N = 3
 Vol_size = [400, 400, 360]
 Vol_start = [-200, -200, -180]
 coil_res = 1
@@ -15,13 +15,11 @@ plane_min_angle = 11.25
 only_read = True
 
 
-ripperoni.approx_N_coils('Globus2_coils',f"Globus2_coils/coils_base.txt", N, 4)
-ripperoni.clone_coils('Globus2_coils', N, 16)
-#ripperoni.misplace_coil(-10.3112,0,N)
-#ripperoni.misplace_coil(0.3112,1,N)
-
-coilnames = []
+ripperoni.approx_N_coils('../Globus3_coils',f"../Globus3_coils/coils_base_upd.txt", N, 4)
+ripperoni.clone_coils('../Globus3_coils', N, 16)
+#coilnames = []
+coilnames = ['../Globus3_coils/coil_base_u_1.txt','../Globus3_coils/coil_base_u_2.txt','../Globus3_coils/coil_base_u_3.txt','../Globus3_coils/coil_base_u_4.txt']
 for i in range(int(4*(N-1))):
-    for j in range(2):
-        coilnames.append(f"Globus2_coils/coil{i}_{j}.txt")
-ripperoni.plot_coils(coilnames,[-15,15],[-15,15],[70,100])
+    for j in range(1):
+        coilnames.append(f"../Globus3_coils/coil{i}_{j}.txt")
+ripperoni.plot_coils(coilnames,[-30,30],[-30,30],[120,180])

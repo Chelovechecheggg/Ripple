@@ -25,34 +25,6 @@ def parse_coil(filename):
     return parsed_coil.T
 
 
-def plot_coil(*input_filenames):
-    '''
-    Plots one or more coils in space.
-
-    input_filenames: Name of the files containing the coils.
-    Should be formatted appropriately.
-    '''
-    fig = plt.figure()
-    tick_spacing = 2
-    ax = fig.add_subplot(111, projection='3d')
-    ax.set_xlabel("$x$ (cm)")
-    ax.set_ylabel("$y$ (cm)")
-    ax.set_zlabel("$z$ (cm)")
-    i = 0
-    for input_filename in input_filenames:
-        coil_points = np.array(parse_coil(input_filename))
-        if i < 4:
-            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='green')
-        else:
-            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
-        i += 1
-    ax.axes.set_xlim3d(left=10, right=180)
-    ax.axes.set_ylim3d(bottom=-20, top=20)
-    ax.axes.set_zlim3d(bottom=-150, top=150)
-    plt.tight_layout()
-    plt.show()
-
-
 def plot_coils(input_filenames,xlims,ylims,zlims):
     '''
     Plots one or more coils in space.
@@ -207,7 +179,7 @@ def make_approx(splits, N, N_base_coils):
                 ax.scatter(splits[2, -(i+1), 0], splits[2, -(i+1), 1], splits[2, -(i+1), 2], lw=2, color='green')
                 ax.scatter(splits[1, k, 0], splits[1, k, 1], splits[1, k, 2], lw=2, color='green')
                 ax.scatter(splits[3, k, 0], splits[3, k, 1], splits[3, k, 2], lw=2, color='green')
-                
+
                 ax.scatter(coil_points[0], coil_points[1], coil_points[2], lw=2)
                 '''
                 j += 1
@@ -236,6 +208,39 @@ def make_approx(splits, N, N_base_coils):
 
     # plt.tight_layout()
     # plt.show()
+
+    return approx
+
+
+def make_approx2(splits, N, N_base_coils):
+    '''
+    fig = plt.figure()
+    tick_spacing = 2
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel("$x$ (cm)")
+    ax.set_ylabel("$y$ (cm)")
+    ax.set_zlabel("$z$ (cm)")
+    ax.axes.set_xlim3d(left=00, right=40)
+    ax.axes.set_ylim3d(bottom=-20, top=20)
+    ax.axes.set_zlim3d(bottom=120, top=160)
+    '''
+
+    approx = np.zeros(shape=(int(N_base_coils * (N - 1)), 3))
+    j = 0
+    for i in range(int(N)):
+        for k in range(int(N)):
+            approx[j] = intersect(splits[0, i], splits[2, -(i + 1)], splits[1, k], splits[3, -(k + 1)])
+
+            coil_points = approx[j]
+            '''
+            ax.scatter(splits[0,i,0], splits[0,i,1], splits[0,i,2], lw=2,color='green')
+            ax.scatter(splits[2, -(i+1), 0], splits[2, -(i+1), 1], splits[2, -(i+1), 2], lw=2, color='green')
+            ax.scatter(splits[1, k, 0], splits[1, k, 1], splits[1, k, 2], lw=2, color='green')
+            ax.scatter(splits[3, k, 0], splits[3, k, 1], splits[3, k, 2], lw=2, color='green')
+
+            ax.scatter(coil_points[0], coil_points[1], coil_points[2], lw=2)
+            '''
+            j += 1
 
     return approx
 
@@ -345,13 +350,13 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
             file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i,k]) +  "\n")
 
 
-def misplace_coil(angle,coil_number,N):
+def misplace_coil(path,angle,coil_number,N):
     for i in range(int(4*(N-1))):
-        coil = np.loadtxt(f'Globus3_coils/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
+        coil = np.loadtxt(f'{path}/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
         coil_coords = coil[:,:3]
         r = R.from_euler('z', angle, degrees=True)
         coil_coords = r.apply(coil_coords)
-        file = open(f'Globus3_coils/coil{i}_{coil_number}.txt','w')
+        file = open(f'{path}/coil{i}_{coil_number}.txt','w')
         for point in coil_coords:
             file.write(str(point[0]) + "," + str(point[1]) + "," + str(point[2]) + ',' + '1' "\n")
         file.close()
@@ -470,4 +475,25 @@ def plot_Bt(Bfields, box_size, start_point, vol_resolution, which_plane='z', lev
 
     plt.show()
 
+
+def plot_coil(*input_filenames):
+    fig = plt.figure()
+    tick_spacing = 2
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel("$x$ (cm)")
+    ax.set_ylabel("$y$ (cm)")
+    ax.set_zlabel("$z$ (cm)")
+    i = 0
+    for input_filename in input_filenames:
+        coil_points = np.array(parse_coil(input_filename))
+        if i < 4:
+            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='green')
+        else:
+            ax.plot3D(coil_points[0, :], coil_points[1, :], coil_points[2, :], lw=2, color='blue')
+        i += 1
+    ax.axes.set_xlim3d(left=10, right=180)
+    ax.axes.set_ylim3d(bottom=-20, top=20)
+    ax.axes.set_zlim3d(bottom=-150, top=150)
+    plt.tight_layout()
+    plt.show()
 '''
