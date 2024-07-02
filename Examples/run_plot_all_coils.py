@@ -20,7 +20,7 @@ ripperoni.misplace_coil('../Globus3_coils', -10.3112, 0, N)
 ripperoni.misplace_coil('../Globus3_coils', 0.3112, 1, N)
 
 coilnames = []
-for i in range(int(4 * (N - 1))):
+for i in range(int(N**2)):
     for j in range(16):
         coilnames.append(f"../Globus3_coils/coil{i}_{j}.txt")
 ripperoni.plot_coils(coilnames, [-200, 200], [-200, 200], [-200, 200])

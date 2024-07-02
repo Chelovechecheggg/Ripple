@@ -284,7 +284,7 @@ def approx_N_coils(path, coil_fn, N, N_base_coils):
 
 
 def clone_coils(fpath, N, N_clones):
-    for p in range(int(4 * (N - 1))):
+    for p in range(int(N**2)):
         for l in range(N_clones):
             r = R.from_euler('z', (360 / N_clones) * l, degrees=True)
             vert = np.loadtxt(f'{fpath}\coil{p}.txt', delimiter=',')
@@ -317,7 +317,7 @@ def calc_plane_Bfield(path, N, plane, coil_res):
     # h = np.zeros(shape=(4*(N-1)*16,N_points,3))
     B_tor = np.zeros(shape=(1, len(plane[0]), len(plane[0, 0])))
     B_tor2 = np.zeros(shape=(1, len(plane[0]), len(plane[0, 0])))
-    for i in range(int(4 * (N - 1))):
+    for i in range(int(N**2)):
         for l in range(16):
             coil = parse_coil(f"{path}/coil{i}_{l}.txt")
             sliced_coil = bs.slice_coil(coil[:3].T, coil[3:4].T, coil_res)
@@ -350,7 +350,7 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
 
 
 def misplace_coil(path, angle, coil_number, N):
-    for i in range(int(4 * (N - 1))):
+    for i in range(int(N**2)):
         coil = np.loadtxt(f'{path}/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
         coil_coords = coil[:, :3]
         r = R.from_euler('z', angle, degrees=True)

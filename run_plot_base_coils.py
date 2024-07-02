@@ -1,6 +1,6 @@
 import ripple_main as ripperoni
 
-N = 3
+N = 10
 Vol_size = [400, 400, 360]
 Vol_start = [-200, -200, -180]
 coil_res = 1
@@ -19,7 +19,7 @@ ripperoni.clone_coils('Globus3_coils', N, 16)
 # coilnames = []
 coilnames = ['Globus3_coils/coil_base_u_1.txt', 'Globus3_coils/coil_base_u_2.txt', 'Globus3_coils/coil_base_u_3.txt',
              'Globus3_coils/coil_base_u_4.txt']
-for i in range(int(4 * (N - 1))):
+for i in range(int(N**2)):
     for j in range(1):
         coilnames.append(f"Globus3_coils/coil{i}_{j}.txt")
 ripperoni.plot_coils(coilnames, [-30, 30], [-30, 30], [120, 180])

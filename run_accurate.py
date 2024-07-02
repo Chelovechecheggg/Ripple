@@ -13,7 +13,7 @@ planes_Zminmax = [[-150, -130], [-130, -110], [-110, -90], [-90, -70], [-70, -50
 plane_max_angle = 22.5
 plane_min_angle = 11.25
 only_read = True
-output_filename = f'Globus3_coils/Ripple_curv_upd/Ripple_curv_upd_35.txt'
+output_filename = f'Globus3_coils/Ripple_curv_upd/Ripple_fill_curv_upd_10.txt'
 
 ripperoni.approx_N_coils('Globus3_coils', f"Globus3_coils/coils_base_curved_upd.txt", N, 4)
 ripperoni.clone_coils('Globus3_coils', N, 16)

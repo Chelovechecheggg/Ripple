@@ -20,7 +20,7 @@ ripperoni.clone_coils('Globus2_coils', N, 16)
 # ripperoni.misplace_coil(0.3112,1,N)
 
 coilnames = []
-for i in range(int(4 * (N - 1))):
+for i in range(int(N**2)):
     for j in range(2):
         coilnames.append(f"Globus2_coils/coil{i}_{j}.txt")
 ripperoni.plot_coils(coilnames, [-15, 15], [-15, 15], [70, 100])
