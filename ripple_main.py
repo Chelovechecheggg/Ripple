@@ -275,7 +275,7 @@ def approx_N_coils(path,coil_fn, N, N_base_coils):
             points[l] = ps
             l += 1
         splits = split_segments(points, N, N_base_coils)
-        approximated_coils[:, i] = make_approx2(splits, N, N_base_coils)
+        approximated_coils[:, i] = make_approx(splits, N, N_base_coils)
     print(approximated_coils)
     for k in range(len(approximated_coils)):
         print(approximated_coils[k])
@@ -350,13 +350,13 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
             file.write(str(R[i]) + "," + str(Z[k]) + "," + str(ripple[i,k]) +  "\n")
 
 
-def misplace_coil(angle,coil_number,N):
+def misplace_coil(path,angle,coil_number,N):
     for i in range(int(4*(N-1))):
-        coil = np.loadtxt(f'Globus3_coils/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
+        coil = np.loadtxt(f'{path}/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
         coil_coords = coil[:,:3]
         r = R.from_euler('z', angle, degrees=True)
         coil_coords = r.apply(coil_coords)
-        file = open(f'Globus3_coils/coil{i}_{coil_number}.txt','w')
+        file = open(f'{path}/coil{i}_{coil_number}.txt','w')
         for point in coil_coords:
             file.write(str(point[0]) + "," + str(point[1]) + "," + str(point[2]) + ',' + '1' "\n")
         file.close()
