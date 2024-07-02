@@ -4,7 +4,8 @@ This package is used to calculate magnetic field ripple of a tokamak in (R,Z) co
 It is made for calculating Globus-M3 ripple, but can be used for any other tokamak (configuration of coils). 
 This package assumes that current is equal in all parts of the coil (assumes I = 1 A, since ripple is independent of current). 
 It also has additional functionality, i.e. calculating toroidal magnetic field in (X,Y) plane at height Z, 
-and a plotting function for verifying input coils. Example files with required input data and their descriptions are provided.
+and a plotting function for verifying input coils. Example files with required input data and their descriptions are provided
+(see Examples folder).
 This package uses biot_savart library for calculating magnetic fields.
 ## Usage
 ### Input file formatting
