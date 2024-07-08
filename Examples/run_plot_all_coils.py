@@ -12,12 +12,14 @@ planes_Zminmax = [[-150, -130], [-130, -110], [-110, -90], [-90, -70], [-70, -50
                   [10, 30], [30, 50], [50, 70], [70, 90], [90, 110], [110, 130], [130, 150]]
 plane_max_angle = -0.3112
 plane_min_angle = 11.25
+folder_name = '../Globus3_coils'
+base_coil = f"../Globus3_coils/coils_base_upd.txt"
 only_read = True
 
-ripperoni.approx_N_coils('../Globus3_coils', f"../Globus3_coils/coils_base_upd.txt", N, 4)
-ripperoni.clone_coils('../Globus3_coils', N, 16)
-ripperoni.misplace_coil('../Globus3_coils', -10.3112, 0, N)
-ripperoni.misplace_coil('../Globus3_coils', 0.3112, 1, N)
+ripperoni.approx_N_coils(folder_name, base_coil, N, 4)
+ripperoni.clone_coils(folder_name, N, 16)
+ripperoni.misplace_coil(folder_name, -10.3112, 0, N)
+ripperoni.misplace_coil(folder_name, 0.3112, 1, N)
 
 coilnames = []
 for i in range(int(N**2)):

@@ -14,16 +14,18 @@ planes_Yminmax = [[-190, -170], [-170, -150], [-150, -130], [-130, -110], [-110,
 plane_max_angle = -0.3112
 plane_min_angle = 11.25
 only_read = True
+folder_name = '../Globus3_coils'
+base_coil = f"../Globus3_coils/coils_base_upd.txt"
 
-ripperoni.approx_N_coils('../Globus3_coils', f"../Globus3_coils/coils_base_curved.txt", N, 4)
-ripperoni.clone_coils('../Globus3_coils', N, 16)
-ripperoni.misplace_coil('../Globus3_coils', -0.3112, 0, N)
-ripperoni.misplace_coil('../Globus3_coils', 0.3112, 1, N)
+ripperoni.approx_N_coils(folder_name, base_coil, N, 4)
+ripperoni.clone_coils(folder_name, N, 16)
+ripperoni.misplace_coil(folder_name, -0.3112, 0, N)
+ripperoni.misplace_coil(folder_name, 0.3112, 1, N)
 
 l = 0
 for plane_Xminmax in planes_Xminmax:
     for plane_Yminmax in planes_Yminmax:
         print(plane_Xminmax, plane_Yminmax)
-        ripperoni.calc_Btor(plane_Xminmax, plane_Yminmax, vol_res, coil_res, '../Globus3_coils', N,
+        ripperoni.calc_Btor(plane_Xminmax, plane_Yminmax, vol_res, coil_res, folder_name, N,
                             f'../Btor/Btor_{l}.txt')
         l += 1
