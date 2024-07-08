@@ -13,12 +13,14 @@ plane_Zminmax = [-150, 150]
 plane_max_angle = 22.5
 plane_min_angle = 11.25
 output_filename = f'../Globus3_coils/Ripple.txt'
+folder_name = '../Globus3_coils'
+base_coil = f"../Globus3_coils/coils_base_upd.txt"
 only_read = True
 
 ripperoni.clear_output_file(output_filename)
-ripperoni.approx_N_coils('../Globus3_coils', f"../Globus3_coils/coils_base_upd.txt", N, 4)
-ripperoni.clone_coils('../Globus3_coils', N, 16)
+ripperoni.approx_N_coils(folder_name, base_coil, N, 4)
+ripperoni.clone_coils(folder_name, N, 16)
 
-ripple = ripperoni.calc_ripple('Globus3_coils', N, vol_res, plane_Xminmax, plane_Zminmax, coil_res, plane_max_angle,
+ripple = ripperoni.calc_ripple(folder_name, N, vol_res, plane_Xminmax, plane_Zminmax, coil_res, plane_max_angle,
                                plane_min_angle)
 ripperoni.print_ripple(ripple, plane_Xminmax, plane_Zminmax, vol_res, output_filename)

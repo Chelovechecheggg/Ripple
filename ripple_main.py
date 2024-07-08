@@ -125,17 +125,15 @@ def split_segments(points, N, N_base_coils):
     ax.axes.set_zlim3d(bottom=120, top=160)
     '''
     splits = np.zeros(shape=(int(N_base_coils), int(N), 3))
-    i = 0
-    for pn in range(len(points)):
+    for i, p in enumerate(points):
         k = 0
-        segment = points[pn] - points[pn - 1]
+        segment = p - points[i - 1]
         # print(segment)
         for sp_n in range(int(N)):
             # ax.scatter(points[pn,0], points[pn,1], points[pn,2], lw=2, color='green')
-            splits[i, k] = points[pn] - segment * ((k + 1) / (int(N) + 1))
+            splits[i, k] = p - segment * ((k + 1) / (int(N) + 1))
             # ax.scatter(splits[i,k,0], splits[i,k,1],splits[i,k,2], lw=2)
             k += 1
-        i += 1
 
     # plt.tight_layout()
     # plt.show()
@@ -173,9 +171,9 @@ def make_approx(splits, N, N_base_coils):
         if i == 0 or i == N - 1:
             for k in range(int(N)):
                 approx[j] = intersect(splits[0, i], splits[2, -(i + 1)], splits[1, k], splits[3, -(k + 1)])
-
-                coil_points = approx[j]
                 '''
+                coil_points = approx[j]
+                
                 ax.scatter(splits[0,i,0], splits[0,i,1], splits[0,i,2], lw=2,color='green')
                 ax.scatter(splits[2, -(i+1), 0], splits[2, -(i+1), 1], splits[2, -(i+1), 2], lw=2, color='green')
                 ax.scatter(splits[1, k, 0], splits[1, k, 1], splits[1, k, 2], lw=2, color='green')
@@ -226,7 +224,7 @@ def make_approx2(splits, N, N_base_coils):
     ax.axes.set_zlim3d(bottom=120, top=160)
     '''
 
-    approx = np.zeros(shape=(int(N_base_coils * (N - 1)), 3))
+    approx = np.zeros(shape=(int(N ** 2), 3))
     j = 0
     for i in range(int(N)):
         for k in range(int(N)):
@@ -254,29 +252,24 @@ def print_coil(path, coil, k):
 
 
 def approx_N_coils(path, coil_fn, N, N_base_coils):
+    # read file in specific format
     all_coils = np.loadtxt(coil_fn, comments="#", delimiter="\t", unpack=False)
     # print(all_coils)
-    K = int((len(all_coils) - N_base_coils + 1) / N_base_coils)
-    coils = np.zeros(shape=(N_base_coils, K, 3))
-    k = 0
-    j = 0
-    for segment in all_coils:
-        if np.array_equal(segment, np.array([0, 0, 0])):
-            j += 1
-            k = -1
-        else:
-            coils[j, k] = segment
-        k += 1
-    # print(coils)
+    base_coil_size = int((len(all_coils) - N_base_coils + 1) / N_base_coils)
+    coils = np.zeros(shape=(N_base_coils, base_coil_size, 3))
+    for j in range(N_base_coils):
+        coils[j] = all_coils[(j * base_coil_size) + j: ((j + 1) * base_coil_size) + j]
+
+    # create all approximated coils
     points = np.zeros(shape=(N_base_coils, 3))
-    approximated_coils = np.zeros(shape=(int(N_base_coils * (N - 1)), K, 3))
-    for i in range(K):
+    approximated_coils = np.zeros(shape=(int(N ** 2), base_coil_size, 3))
+    for i in range(base_coil_size):
         l = 0
         for ps in coils[:, i]:
             points[l] = ps
             l += 1
         splits = split_segments(points, N, N_base_coils)
-        approximated_coils[:, i] = make_approx(splits, N, N_base_coils)
+        approximated_coils[:, i] = make_approx2(splits, N, N_base_coils)
     print(approximated_coils)
     for k in range(len(approximated_coils)):
         print(approximated_coils[k])
@@ -284,7 +277,7 @@ def approx_N_coils(path, coil_fn, N, N_base_coils):
 
 
 def clone_coils(fpath, N, N_clones):
-    for p in range(int(4 * (N - 1))):
+    for p in range(int(N**2)):
         for l in range(N_clones):
             r = R.from_euler('z', (360 / N_clones) * l, degrees=True)
             vert = np.loadtxt(f'{fpath}\coil{p}.txt', delimiter=',')
@@ -317,7 +310,7 @@ def calc_plane_Bfield(path, N, plane, coil_res):
     # h = np.zeros(shape=(4*(N-1)*16,N_points,3))
     B_tor = np.zeros(shape=(1, len(plane[0]), len(plane[0, 0])))
     B_tor2 = np.zeros(shape=(1, len(plane[0]), len(plane[0, 0])))
-    for i in range(int(4 * (N - 1))):
+    for i in range(int(N**2)):
         for l in range(16):
             coil = parse_coil(f"{path}/coil{i}_{l}.txt")
             sliced_coil = bs.slice_coil(coil[:3].T, coil[3:4].T, coil_res)
@@ -350,7 +343,7 @@ def print_ripple(ripple, Xminmax, Zminmax, vol_res, filename):
 
 
 def misplace_coil(path, angle, coil_number, N):
-    for i in range(int(4 * (N - 1))):
+    for i in range(int(N**2)):
         coil = np.loadtxt(f'{path}/coil{i}_{coil_number}.txt', comments="#", delimiter=",", unpack=False)
         coil_coords = coil[:, :3]
         r = R.from_euler('z', angle, degrees=True)
